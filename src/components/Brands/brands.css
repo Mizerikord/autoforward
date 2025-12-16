@@ -1,0 +1,74 @@
+.brands {
+  width: 100%;
+  display: none;
+  margin: 50px 0 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.brands_select-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.brands_selector {
+  width: 200px;
+  height: 42px;
+  background: linear-gradient(90deg, #de556f 0%, #48204e 100%);
+  border: none;
+  outline: none;
+  color: #ffffff;
+  font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
+  font-style: light;
+  font-weight: 300;
+  font-size: 18px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  cursor: pointer;
+  transition-duration: 0.2s;
+}
+
+.brands_selector:hover {
+  transition-duration: 0.2s;
+  filter: contrast(150%);
+}
+
+.brands_selector:first-child {
+  background: #666666;
+}
+
+.brands_container {
+  margin-top: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.brands_list {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+}
+
+.brands_item {
+  width: 154px;
+  height: 16px;
+}
+
+.brands_element {
+  margin: 0;
+  padding: 0;
+  font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
+  font-style: light;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  color: #222222;
+}
