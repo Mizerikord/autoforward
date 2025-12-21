@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/autoforward/static/css/main.eb697811.css",
-    "main.js": "/autoforward/static/js/main.ea95e8d8.js",
+    "main.css": "/autoforward/static/css/main.23e2c6bd.css",
+    "main.js": "/autoforward/static/js/main.0cc33f7c.js",
     "static/media/Inter-Black.woff": "/autoforward/static/media/Inter-Black.fd37f7e052bea1018058.woff",
     "static/media/Inter-Medium.woff": "/autoforward/static/media/Inter-Medium.7ddb89dcdb33dd761944.woff",
     "static/media/Inter-Regular.woff": "/autoforward/static/media/Inter-Regular.34ed58565339f4f3be40.woff",
@@ -38,12 +38,13 @@
     "index.html": "/autoforward/index.html",
     "static/media/cart.svg": "/autoforward/static/media/cart.d7b5fee81de97a8c1058f78d86ac0ef5.svg",
     "static/media/burger-menu.svg": "/autoforward/static/media/burger-menu.ece9500a70c9678ca66a.svg",
+    "static/media/closeImg.svg": "/autoforward/static/media/closeImg.f1fa8fa3c41593459084cc55302c945e.svg",
     "static/media/select-icon.svg": "/autoforward/static/media/select-icon.cbb8df4a8314277881cf.svg",
-    "main.eb697811.css.map": "/autoforward/static/css/main.eb697811.css.map",
-    "main.ea95e8d8.js.map": "/autoforward/static/js/main.ea95e8d8.js.map"
+    "main.23e2c6bd.css.map": "/autoforward/static/css/main.23e2c6bd.css.map",
+    "main.0cc33f7c.js.map": "/autoforward/static/js/main.0cc33f7c.js.map"
   },
   "entrypoints": [
-    "static/css/main.eb697811.css",
-    "static/js/main.ea95e8d8.js"
+    "static/css/main.23e2c6bd.css",
+    "static/js/main.0cc33f7c.js"
   ]
 }
