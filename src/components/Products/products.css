@@ -134,11 +134,10 @@
 }
 
 .products_card-item {
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .products_card-img {
@@ -146,7 +145,16 @@
   height: 250px;
 }
 
+.products_card-description-container{
+  width: 100%;
+  height: 26px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .products_card-description-list{
+  width: 100%;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -157,7 +165,7 @@
 }
 
 .products_card-description-item{
-
+  width: 100%;
 }
 
 .products_card-description-element{

@@ -8,20 +8,27 @@ function Search(props) {
     const [category, setCategory] = useState("");
 
     function handleSearch(e) {
-        const currentCategory = e.target.parentNode.querySelector(".search_card-text").textContent;
-        let categorySearched = [];
-        function selected(obj) {
-            Object.keys(obj).forEach((elem) => {
-                if (props.category[0].autos[elem].category === currentCategory) {
-                    return categorySearched.push(elem);
-                }
-                return;
-            })
-        }
-        selected(props.category[0].autos, category);
-        setCategory(categorySearched);
-        document.querySelector(".search_cards-container").style.display = "none";
-        document.querySelector(".brands").style.display = "flex";
+        // const currentCategory = e.target.parentNode.querySelector(".search_card-text").textContent;
+        // let categorySearched = [];
+        // function selected(obj) {
+        //     Object.keys(obj).forEach((elem) => {
+        //         if (props.category[0].autos[elem].category === currentCategory) {
+        //             return categorySearched.push(elem);
+        //         }
+        //         return;
+        //     })
+        // }
+        // selected(props.category[0].autos, category);
+        // setCategory(categorySearched);
+        // document.querySelector(".search_cards-container").style.display = "none";
+        // document.querySelector(".brands").style.display = "flex";
+    }
+
+    function handleSubmit(){
+        
+        const inputValue = document.querySelector("#search-elements").value;
+        console.log(inputValue);
+        return props.onSearch(props.mark, props.model, props.generation, inputValue);
     }
 
     return (
@@ -32,7 +39,7 @@ function Search(props) {
                     <input id="search-elements" type="text" className="search_search-text" placeholder="Марка, запчасть, артикул или VIN" />
                     <span className="search_search-text-img"></span>
                 </div>
-                <button className="search_search-button">Найти</button>
+                <button className="search_search-button" onClick={handleSubmit}>Найти</button>
             </div>
             <div className="search_cards-container">
                 <ul className="search_cards">

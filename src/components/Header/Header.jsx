@@ -1,8 +1,36 @@
 import "./header.css";
 import { Link } from "react-router-dom";
 import cart from "../../media/cart.svg";
+import { useEffect, useState } from "react";
 
-function Header() {
+function Header(props) {
+
+    const [isCount, setCount] = useState("0");
+    const [isCost, setCost] = useState("0");
+
+    function handleSubmit() {
+        const inputValue = document.querySelector(".header_navbar-search").value;
+        return props.onSearch(props.mark, props.model, props.generation, inputValue);
+    }
+
+    function openCart() {
+        return props.onOpen();
+    }
+
+    useEffect(()=>{
+        setCost(0);
+        function sumPrice (cart){
+            let sum = 0;
+            cart.map((card)=>{
+                return sum = Number(card.price) + sum;
+            })
+            return sum;
+        }
+        const totalCost = sumPrice(props.isCurrentCart);
+        setCount(props.isCurrentCart.length);
+        return setCost(totalCost);
+    },[props.isCurrentCart])
+
     return <section className="header">
         <div className="header_logo-container">
             <span className="header_location">Москва</span>
@@ -36,19 +64,17 @@ function Header() {
                     </svg>Каталог</button>
                 <p className="header_navbar-search-container">
 
-                    <input type="search" name="search" id="search" className="header_navbar-search" 
-                    placeholder="Марка, запчасть, артикул или VIN"
-                    // placeholder="Поиск"
-                     />
+                    <input type="search" name="search" id="search" className="header_navbar-search"
+                        placeholder="Марка, запчасть, артикул или VIN"/>
                     <span className="header_navbar-search-img"></span>
                 </p>
-                <input type="button" value="Найти" className="header_navbar-button" />
-                <div className="header_navbar-cart-container">
-                    <span className="header_navbar-cart-number">2</span>
+                <input type="button" value="Найти" className="header_navbar-button" onClick={handleSubmit} />
+                <div className="header_navbar-cart-container" onClick={openCart}>
+                    <span className="header_navbar-cart-number">{isCount}</span>
                     <img src={cart} alt="" className="header_navbar-cart" />
                     <p className="header_navbar-cart-description">Корзина</p>
                 </div>
-                <p className="header_navbar-cost">100000&nbsp;₽</p>
+                <p className="header_navbar-cost">{isCost}&nbsp;₽</p>
             </div>
         </div>
     </section>;

@@ -145,16 +145,22 @@
   margin: 0;
   display: flex;
   flex-direction: column;
+  max-height: 350px;
+  overflow-y: auto;
 }
 
 .main-form_option-item{
   width: 332px;
-  height: 40px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   background-color: #ffffff;
   background-color: rgb(255, 255, 255, 0);
+}
+
+.main-form_option-item-generation{
+  height: 40px;
 }
 
 .main-form_option-list__disbled{
@@ -167,6 +173,8 @@
 
 .main-form_option__text{
   margin: 0 16px;
+  width: 100%;
+  height: 30px;
   font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 400;
@@ -174,6 +182,12 @@
   line-height: 100%;
   letter-spacing: 0%;
   color: #222222;
+  display: flex;
+  align-items: center;
+}
+
+.main-form_option__text-generation{
+  height: 40px;
 }
 
 .main-form_select__disabled {
@@ -220,6 +234,12 @@
   background: linear-gradient(90deg, #de556f, #48204e);
   color: #ffffff;
   cursor: pointer;
+  font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
 }
 
 .search_contacts-container {
@@ -253,6 +273,7 @@
 }
 
 .main-form_params-list {
+  width: 100%;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -293,6 +314,8 @@
 .main-form_arrow__category {
   min-width: 7px;
 }
+
+
 
 
 @media screen and (max-width: 1424px) {
@@ -422,6 +445,10 @@
   }
 
   .main-form_option-list, .main-form_option-item, .main-form_option__text, .main-form_search{
+    width: 100%;
+  }
+
+  .main-form_params-container{
     width: 100%;
   }
 }

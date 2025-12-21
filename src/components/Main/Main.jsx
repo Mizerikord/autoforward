@@ -6,11 +6,10 @@ import { useState, useEffect } from "react";
 import News from "./News/News";
 import ModelList from "./ModelList/ModelList";
 import Products from "../Products/Products";
+import categoryElements from "../../utils/categories";
 
 function Main(props) {
     const exports = props.export;
-
-    const categoryElements = ["Дверь", "Двигатель", "Другие детали", "Задние детали (для внешности)", "Задняя ось", "Колеса / покрышки / колпаки", "Коробка передач / сцепление / трансмиссия", "Кузов / части кузова / крюк", "Передние детали (для внешности)", "Передняя ось", "Приборы / включатели / электрическая система", "Салон / интерьер", "Система выброса газов", "Система горючей смеси", "Система опрыскивания / чистки", "Система освещения", "Система / радиаторы кондиционирования – нагрева воздуха", "Стекла / окно", "Тормозная система"]
 
     const [isMark, setMark] = useState([]);
     const [isModel, setModel] = useState([]);
@@ -19,6 +18,7 @@ function Main(props) {
     const [allMarks, setAllMarks] = useState([]);
     const [checkedModels, setCheckedModels] = useState([]);
     const [checkedGenerations, setCheckedGenerations] = useState([]);
+    const [isSearched, setSearched] = useState();
 
     function filterData(data) {
         const newArrData = []
@@ -46,9 +46,10 @@ function Main(props) {
     }
 
     useEffect(() => {
+        // setSearched(exports);
         filterData("mark");
         return enterContent();
-    }, [])
+    }, []);
 
 
     function handleChangeMark(e) {
@@ -78,12 +79,14 @@ function Main(props) {
             }
             )
             if (isMark.length === 0) {
+                props.onCarsData("mark", [e.target.value]);
                 return setMark([e.target.value]);
             }
             if (isMark.includes(e.target.value)) {
                 return;
             }
             if (isMark.length > 0) {
+                props.onCarsData("mark", [e.target.value]);
                 return setMark(e.target.value);
             }
             return
@@ -99,9 +102,7 @@ function Main(props) {
                 setGeneration("Поколение");
                 el.remove();
             });
-
             const option = [];
-
             exports.map((elem) => {
                 if (isModel.toUpperCase === elem.model.toUpperCase) {
                     return option.push(elem);
@@ -186,7 +187,7 @@ function Main(props) {
         }
 
         if (e.target.id === "generation-list" && document.querySelector(".main-form_option-list__generation").classList.contains("main-form_option-list__disbled")) {
-            if (isModel.length === 0) {
+            if (checkedModels.length === 0) {
                 return;
             }
             document.querySelector(".main-form_option-list__generation").classList.remove("main-form_option-list__disbled");
@@ -195,20 +196,21 @@ function Main(props) {
         }
     }
 
-    useEffect(() => {
-        if (isMark.length > 0) {
-            document.querySelector(".main-form_model").classList.remove("main-form_select__disabled");
-            document.querySelector(".main-news").classList.add("main-news-disabled");
-            document.querySelector(".models").classList.remove("models-disabled");
-        }
-        else {
-            document.querySelector(".main-news").classList.remove("main-news-disabled");
-            document.querySelector(".models").classList.add("models-disabled");
-        }
-    }, [isModel, isGeneration, isMark])
+    // useEffect(() => {
+    //     if (isMark.length > 0) {
+    //         document.querySelector(".main-form_model").classList.remove("main-form_select__disabled");
+    //         document.querySelector(".main-news").classList.add("main-news-disabled");
+    //         document.querySelector(".models").classList.remove("models-disabled");
+    //     }
+    //     else {
+    //         document.querySelector(".main-news").classList.remove("main-news-disabled");
+    //         document.querySelector(".models").classList.add("models-disabled");
+    //     }
+    // }, [isModel, isGeneration, isMark])
 
     //формирование наполнения вкладки
     function handleCheck(e) {
+        const modelList = document.querySelector(".model-list")
         let currentTarget = "";
         if (e.target.classList.contains("main-form_option-item")) {
             currentTarget = e.target.querySelector(".main-form_option__text");
@@ -217,12 +219,21 @@ function Main(props) {
         }
         const currentCategory = currentTarget.parentNode.parentNode.previousSibling.id;
         if (currentCategory === "mark-list") {
+            if (modelList.classList.contains("model-list__category")) {
+                modelList.classList.remove("model-list__category");
+            }
+            props.onCarsData("mark", [currentTarget.textContent]);
             setMark([currentTarget.textContent]);
+            props.onCarsData("model", [])
             setCheckedModels([]);
+            props.onCarsData("generation", [])
             setCheckedGenerations([]);
             document.querySelector(".main-form_option-list__marks").classList.add("main-form_option-list__disbled");
             return createModelList(currentTarget.textContent)
         } else if (currentCategory === "model-list") {
+            if (modelList.classList.contains("model-list__category")) {
+                modelList.classList.remove("model-list__category");
+            }
             const currentmodel = currentTarget.textContent;
             let newChecked = [];
             if (checkedModels.length === 0) {
@@ -233,7 +244,7 @@ function Main(props) {
                     if (model !== currentmodel) {
                         return newChecked.push(model);
                     } else {
-                        return;
+                        return "";
                     }
                 })
             } else {
@@ -243,31 +254,35 @@ function Main(props) {
                 newChecked.push(currentmodel);
                 newChecked.sort();
             }
+            props.onCarsData("generation", [])
             setCheckedGenerations([]);
             newChecked.length === 0 ? createDataList(isModel) : createGenerationlist(newChecked);
+            // props.onSearchCarsData(newChecked, "model", isMark);
+            props.onCarsData("model", newChecked);
             return setCheckedModels(newChecked);
-
         } else if (currentCategory === "generation-list") {
             const currentGeneration = currentTarget.textContent;
             let newChecked = [];
             if (checkedGenerations.length === 0) {
                 newChecked.push(currentGeneration);
             } else if (checkedGenerations.includes(currentGeneration)) {
+                //если такой есть, удаляем из списка
                 checkedGenerations.map(gen => {
                     if (gen !== currentGeneration) {
                         return newChecked.push(gen);
                     } else {
-                        return;
+                        return "";
                     }
                 })
             } else {
                 checkedGenerations.map(gen => {
-                    newChecked.push(gen);
+                    return newChecked.push(gen);
                 })
                 newChecked.push(currentGeneration);
                 newChecked.sort();
             }
             createParametersList();
+            props.onCarsData("generation", []);
             return setCheckedGenerations(newChecked);
         }
     }
@@ -325,28 +340,38 @@ function Main(props) {
         clearModelList();
         const contentBox = document.querySelector(".model-list");
         content.map(element => {
-            const li = document.createElement("li");
-            li.classList.add("model-item");
-            const p = document.createElement("p");
-            p.classList.add("model-item_text");
-            p.textContent = element;
-            li.appendChild(p);
-            return contentBox.appendChild(li);
+            if (element === "") {
+                return
+            } else {
+                const li = document.createElement("li");
+                li.classList.add("model-item");
+                const p = document.createElement("p");
+                p.classList.add("model-item_text");
+                p.textContent = element;
+                li.appendChild(p);
+                return contentBox.appendChild(li);
+            }
         })
     }
 
+    //формирование табло с категориями доп параметров на месте новостей
     function createParametersList() {
         clearModelList();
         const targetBox = document.querySelector(".model-list");
         targetBox.classList.add("model-list__category");
-        categoryElements.map(elem => {
-            const li = document.createElement("li");
-            li.classList.add("main-form_params-item__category");
-            const p = document.createElement("p");
-            p.classList.add("model-item_text__category");
-            p.textContent = elem;
-            li.appendChild(p);
-            return targetBox.appendChild(li);
+        props.onCategory.map(elem => {
+            if (elem === "") {
+                return
+            } else {
+                const li = document.createElement("li");
+                li.classList.add("main-form_params-item__category");
+                const p = document.createElement("p");
+                p.classList.add("model-item_text__category");
+                p.textContent = elem;
+                li.appendChild(p);
+                return targetBox.appendChild(li);
+            }
+
         })
     }
 
@@ -359,21 +384,47 @@ function Main(props) {
     //ограничиваем количество символов для вывода в окно
     function renderLimitSymbol(data) {
         const currentText = data.join(", ");
-        function limit(string = '', limit = 0) {
-            return string.substring(0, limit);
-        };
-        const isText = limit(currentText, 27)
-        return isText + "...";
+        if (currentText.length > 27) {
+            function limit(string = '', limit = 0) {
+                return string.substring(0, limit);
+            };
+            const isText = limit(currentText, 27)
+            return isText + "...";
+        } else {
+            return currentText;
+        }
     }
 
     function handleSubmit() {
-        // console.log(isMark, isModel, isGeneration);
+        if (isMark.length > 0) {
+            document.querySelector(".main-form_model").classList.remove("main-form_select__disabled");
+            document.querySelector(".main-news").classList.add("main-news-disabled");
+            document.querySelector(".models").classList.remove("models-disabled");
+        }
+        else {
+            document.querySelector(".main-news").classList.remove("main-news-disabled");
+            document.querySelector(".models").classList.add("models-disabled");
+        }
+        if (document.querySelector("#products")){
+            document.querySelector("#products").value = "";
+        } 
+        if (document.querySelector("#search")){
+            document.querySelector("#search").value = "";
+        }
+        if (document.querySelector("#search-elements")){
+            document.querySelector("#search-elements").value = "";
+        }
+        return props.onSearchCarsData(isMark, checkedModels, checkedGenerations);
     }
 
     function addViewEvent(e) {
         // ???????
         const elements = document.querySelectorAll(".main-form_select__text");
     }
+
+    useEffect(()=>{
+        return setSearched(props.isSearch);
+    }, [props.isSearch])
 
     return <section className="main">
         <h1 className="main-title">Поиск б/у и новых автозапчастей онлайн с разбора по всей России</h1>
@@ -390,10 +441,15 @@ function Main(props) {
                         <p id="mark-list" className="main-form_select__text" onClick={openList} onMouseEnter={addViewEvent}>{isMark.length > 0 ? isMark.join(", ") : "Марка"}</p>
                         <ul className="main-form_option-list main-form_option-list__marks main-form_option-list__disbled">
                             {allMarks.map((car, index) => {
-                                return <li className="main-form_option-item" key={index} onClick={handleCheck}>
-                                    <p className="main-form_option__text">{car}</p>
-                                    <input name={car} className="main-form_option" type="checkbox" value={car} />
-                                </li>
+                                if (car === "") {
+                                    return
+                                } else {
+                                    return <li className="main-form_option-item" key={index} onClick={handleCheck}>
+                                        <p className="main-form_option__text">{car}</p>
+                                        <input name={car} className="main-form_option" type="checkbox" value={car} />
+
+                                    </li>
+                                }
                             })}
                         </ul>
                     </div>
@@ -402,10 +458,14 @@ function Main(props) {
                         <ul className="main-form_option-list main-form_option-list__models main-form_option-list__disbled">
                             {isMark.length !== 0 &&
                                 isModel.map((car, index) => {
-                                    return <li className="main-form_option-item" key={index} onClick={handleCheck}>
-                                        <p className="main-form_option__text">{car}</p>
-                                        <input className="main-form_option" type="checkbox" value={car.model} />
-                                    </li>
+                                    if (car === "") {
+                                        return
+                                    } else {
+                                        return <li className="main-form_option-item" key={index} onClick={handleCheck}>
+                                            <p className="main-form_option__text">{car}</p>
+                                            <input className="main-form_option" type="checkbox" value={car.model} />
+                                        </li>
+                                    }
                                 })}
                         </ul>
                     </div>
@@ -415,10 +475,15 @@ function Main(props) {
                         <ul className="main-form_option-list main-form_option-list__generation main-form_option-list__disbled">
                             {isModel.length !== 0 &&
                                 isGeneration.map((gen, index) => {
-                                    return <li className="main-form_option-item" key={index} onClick={handleCheck}>
-                                        <p className="main-form_option__text">{gen}</p>
-                                        <input className="main-form_option" type="checkbox" value={gen.generation} />
-                                    </li>
+                                    if (gen === "") {
+                                        return
+                                    } else {
+                                        return <li className="main-form_option-item main-form_option-item-generation" key={index} onClick={handleCheck}>
+                                            <p className="main-form_option__text main-form_option__text-generation">{gen}</p>
+                                            <input className="main-form_option" type="checkbox" value={gen.generation} />
+                                        </li>
+                                    }
+
                                 })
                             }
                         </ul>
@@ -428,7 +493,7 @@ function Main(props) {
                     <div className="main-form_params-container main-form_params-container-disable">
                         <p className="main-form_category-text">Поиск по категориям</p>
                         <ul className="main-form_params-list">
-                            {categoryElements.map((category, index) => {
+                            {props.onCategory.map((category, index) => {
                                 return <li className="main-form_params-item" key={index}>
                                     <p className="main-form_params-element">{category}</p>
                                     <span className="main-form_arrow"></span>
@@ -441,7 +506,8 @@ function Main(props) {
             <div className="export-data-container">
                 <News slideNews={slideNews} arrow={arrow} />
                 <ModelList />
-                {isMark.length !== 0 && <Products export={props.export} mark={isMark} onSearch={props.onSearch} isSearch={props.isSearch}/>}
+                {props.isSearch.length > 0 && <Products
+                    mark={isMark} model={checkedModels} generation={checkedGenerations} onSearch={props.onSearch} isSearch={isSearched} onAddToCart={props.onAddToCart}/>}
             </div>
         </div>
         <div className="main_contacts-container">
