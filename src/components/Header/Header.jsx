@@ -10,18 +10,18 @@ function Header(props) {
 
     function handleSubmit() {
         const inputValue = document.querySelector(".header_navbar-search").value;
-        return props.onSearch(props.mark, props.model, props.generation, inputValue);
+        return props.onSearchCarsData(props.mark, props.model, props.generation, inputValue);
     }
 
     function openCart() {
         return props.onOpen();
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setCost(0);
-        function sumPrice (cart){
+        function sumPrice(cart) {
             let sum = 0;
-            cart.map((card)=>{
+            cart.map((card) => {
                 return sum = Number(card.price) + sum;
             })
             return sum;
@@ -29,12 +29,12 @@ function Header(props) {
         const totalCost = sumPrice(props.isCurrentCart);
         setCount(props.isCurrentCart.length);
         return setCost(totalCost);
-    },[props.isCurrentCart])
+    }, [props.isCurrentCart])
 
     return <section className="header">
         <div className="header_logo-container">
             <span className="header_location">Москва</span>
-            <span className="header_logo"></span>
+            <Link to="/" className="header_logo"></Link>
         </div>
         <div className="header_navbar-container">
             <div className="header_navbar-contacts">
@@ -47,7 +47,7 @@ function Header(props) {
                         <p className="header_navbar-phone">+7 (929) 665 30 10</p>
                         <p className="header_navbar-phone__correct">Ford</p>
                     </div>
-                    <Link className="header_navbar-link">Контакты</Link>
+                    <Link to="/contacts" className="header_navbar-link">Контакты</Link>
                 </div>
                 <div className="header_navbar-pays">
                     <Link className="header_navbar-pay">Доставка</Link>
@@ -65,7 +65,7 @@ function Header(props) {
                 <p className="header_navbar-search-container">
 
                     <input type="search" name="search" id="search" className="header_navbar-search"
-                        placeholder="Марка, запчасть, артикул или VIN"/>
+                        placeholder="Марка, запчасть, артикул или VIN" />
                     <span className="header_navbar-search-img"></span>
                 </p>
                 <input type="button" value="Найти" className="header_navbar-button" onClick={handleSubmit} />

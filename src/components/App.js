@@ -1,5 +1,6 @@
 import "./App.css";
 import { useState, useEffect } from "react";
+import { Route, Routes } from "react-router-dom";
 import SearchType from "../utils/search-type";
 import PopularCategory from "../utils/popular-category";
 import SearchAuto from "../utils/search-auto";
@@ -9,6 +10,8 @@ import Search from "./Search/Search";
 import Popular from "./Popular/Popular";
 import Article from "./Article/Article";
 import Footer from "./Footer/Footer";
+import Contacts from "./Contacts/Contacts";
+import Menu from "./Menu/Menu";
 import PopupCart from "./PopupCart/PopupCart";
 import Api from "../utils/Api";
 import JSONData from "../utils/export-data";
@@ -36,6 +39,7 @@ function App() {
   function getApiData() {
     setExportData(JSONData);
     setLoading(true);
+    createCategoryList(JSONData);
     // Api.getData()
     //   .then((data) => {
     //     createCategoryList(data);
@@ -65,43 +69,7 @@ function App() {
     return setCategories(category);
   }
 
-  function search(mark, model, generation, inputValue) {
-    if (
-      document
-        .querySelector(".main-form_model")
-        .classList.contains("main-form_select__disabled")
-    ) {
-      document
-        .querySelector(".main-form_model")
-        .classList.remove("main-form_select__disabled");
-      document.querySelector(".main-news").classList.add("main-news-disabled");
-      document.querySelector(".models").classList.remove("models-disabled");
-    }
-    const searchElement = inputValue;
-    if (searchElement) {
-      const searchArrays = [];
-      const searchData =
-        isSearch.length === 0
-          ? isExportData
-          : searchCarsData(mark, model, generation);
-      searchData.map((elem) => {
-        Object.values(elem).find((value) => {
-          if (value === "") {
-            return "";
-          } else {
-            if (value.toUpperCase().indexOf(searchElement.toUpperCase()) >= 0) {
-              return searchArrays.push(elem);
-            }
-            return "";
-          }
-        });
-      });
-      return setSearch(searchArrays);
-    }
-    return;
-  }
-
-  function searchCarsData(mark, model, generation) {
+  function searchCarsData(mark, model, generation, inputValue) {
     function findMark(checkData, mark) {
       const searchArrays = [];
       isExportData.map((data) => {
@@ -144,23 +112,74 @@ function App() {
       searchArrays.sort();
       return searchArrays;
     }
+
+    function searchValue(inputValue, searchArray) {
+      if (inputValue) {
+        const currentData = [];
+        const searchData =
+          searchArray.length === 0 ? isExportData : searchArray;
+        searchData.map((elem) => {
+          Object.values(elem).find((value) => {
+            if (value === "") {
+              return "";
+            } else {
+              if (value.toUpperCase().indexOf(inputValue.toUpperCase()) >= 0) {
+                return currentData.push(elem);
+              }
+              return "";
+            }
+          });
+        });
+        return currentData;
+      }
+      return;
+    }
     if (mark.length === 0) {
-      return isExportData;
+      if (inputValue !== "") {
+        const resultArr = searchValue(inputValue, isExportData);
+        setSearch(resultArr);
+        return resultArr;
+      } else {
+        return isExportData;
+      }
     } else if (mark.length !== 0 && model.length === 0) {
-      const searchArray = findMark(mark);
-      setSearch(searchArray);
-      return searchArray;
+      if (inputValue !== "") {
+        const searchArray = findMark(mark);
+        const resultArr = searchValue(inputValue, searchArray);
+        setSearch(resultArr);
+        return resultArr;
+      } else {
+        const searchArray = findMark(mark);
+        setSearch(searchArray);
+        return searchArray;
+      }
     } else if (model.length !== 0 && generation.length === 0) {
-      const searchMarks = findMark(mark);
-      const searchModels = findModel(searchMarks, model);
-      setSearch(searchModels);
-      return searchModels;
+      if (inputValue !== "") {
+        const searchMarks = findMark(mark);
+        const searchModels = findModel(searchMarks, model);
+        const resultArr = searchValue(inputValue, searchModels);
+        setSearch(resultArr);
+        return resultArr;
+      } else {
+        const searchMarks = findMark(mark);
+        const searchModels = findModel(searchMarks, model);
+        setSearch(searchModels);
+        return searchModels;
+      }
     } else if (generation.length !== 0) {
+      if (inputValue !== "") {
+        const searchMarks = findMark(mark);
+        const searchModels = findModel(searchMarks, model);
+        const searchGeneration = findGeneration(searchModels, generation);
+        setSearch(searchGeneration);
+        return searchGeneration;
+      }
       const searchMarks = findMark(mark);
       const searchModels = findModel(searchMarks, model);
       const searchGeneration = findGeneration(searchModels, generation);
-      setSearch(searchGeneration);
-      return searchGeneration;
+      const resultArr = searchValue(inputValue, searchGeneration);
+      setSearch(resultArr);
+      return resultArr;
     }
   }
 
@@ -191,37 +210,52 @@ function App() {
     isLoading && (
       <div className="App">
         <Header
-          onSearch={search}
+          onSearchCarsData={searchCarsData}
           mark={isMark}
           model={checkedModels}
           generation={checkedGenerations}
           onOpen={openPopup}
           isCurrentCart={isCart}
         />
-        <Main
-          onCarsData={setCarsData}
-          onCategory={categories}
-          onShow={showProducts}
-          export={isExportData}
-          onSearch={search}
-          onSearchCarsData={searchCarsData}
-          isSearch={isSearch}
-          onAddToCart={addToCart}
-        />
-        {!isProducts && (
-          <Search
-            search={categoryList}
-            category={searchAuto}
-            onSearch={search}
-            mark={isMark}
-            model={checkedModels}
-            generation={checkedGenerations}
+        <Routes>
+          <Route path="/contacts" element={<Contacts />} />
+          <Route path="/menu" element={<Menu isCategory={categories} />} />
+
+          {/* Главная страница */}
+          <Route
+            path="/"
+            element={
+              <>
+                <Main
+                  onCarsData={setCarsData}
+                  isCategory={categories}
+                  onShow={showProducts}
+                  export={isExportData}
+                  onSearchCarsData={searchCarsData}
+                  isSearch={isSearch}
+                  onAddToCart={addToCart}
+                />
+                {!isProducts && (
+                  <Search
+                    export={isExportData}
+                    search={categoryList}
+                    category={searchAuto}
+                    mark={isMark}
+                    model={checkedModels}
+                    generation={checkedGenerations}
+                    onSearchCarsData={searchCarsData}
+                  />
+                )}
+                {!isProducts && <Popular popular={popular} />}
+                <Article />
+                <Footer />
+                {isOpenPopup && (
+                  <PopupCart onOpen={openPopup} isCartItems={isCart} />
+                )}
+              </>
+            }
           />
-        )}
-        {!isProducts && <Popular popular={popular} />}
-        <Article />
-        <Footer />
-        {isOpenPopup && <PopupCart onOpen={openPopup} isCartItems={isCart} />}
+        </Routes>
       </div>
     )
   );

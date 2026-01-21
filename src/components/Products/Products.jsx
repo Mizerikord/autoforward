@@ -23,7 +23,6 @@ function Products(props) {
     }
 
     function addItemsCount() {
-        console.log(isCount, isNum);
         const currentCount = isCount + 1;
         let cards = isCard;
         const addeditems = isCards.slice(isCount * isNum + 6, isCount * isNum + 6 + isNum);
@@ -70,7 +69,7 @@ function Products(props) {
         setItemsCount(6);
         setNum(3);
         const inputData = document.querySelector(".products_search").value;
-        return props.onSearch(props.mark, props.model, props.generation, inputData);
+        return props.onCarsData(props.mark, props.model, props.generation, inputData);
     }
 
     useEffect(() => {

@@ -8,27 +8,11 @@ function Search(props) {
     const [category, setCategory] = useState("");
 
     function handleSearch(e) {
-        // const currentCategory = e.target.parentNode.querySelector(".search_card-text").textContent;
-        // let categorySearched = [];
-        // function selected(obj) {
-        //     Object.keys(obj).forEach((elem) => {
-        //         if (props.category[0].autos[elem].category === currentCategory) {
-        //             return categorySearched.push(elem);
-        //         }
-        //         return;
-        //     })
-        // }
-        // selected(props.category[0].autos, category);
-        // setCategory(categorySearched);
-        // document.querySelector(".search_cards-container").style.display = "none";
-        // document.querySelector(".brands").style.display = "flex";
     }
 
     function handleSubmit(){
-        
         const inputValue = document.querySelector("#search-elements").value;
-        console.log(inputValue);
-        return props.onSearch(props.mark, props.model, props.generation, inputValue);
+        return props.onSearchCarsData(props.mark, props.model, props.generation, inputValue);
     }
 
     return (
@@ -51,7 +35,7 @@ function Search(props) {
                     })}
                 </ul>
             </div>
-            <Brands category={category} searchAuto={props.category}/>
+            <Brands category={category} searchAuto={props.category} marks={props.export}/>
         </section>
     );
 }

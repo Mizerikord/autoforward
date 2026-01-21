@@ -1,4 +1,5 @@
 import "./main.css";
+import { Link } from "react-router-dom";
 import news from "../../utils/news";
 import arrow from "../../media/arrow.png";
 import paramsImg from "../../media/add-params.png";
@@ -6,7 +7,9 @@ import { useState, useEffect } from "react";
 import News from "./News/News";
 import ModelList from "./ModelList/ModelList";
 import Products from "../Products/Products";
-import categoryElements from "../../utils/categories";
+import arrowRight from "../../media/arrow-right.png";
+import plus from "../../media/plus.png";
+// import categoryElements from "../../utils/categories";
 
 function Main(props) {
     const exports = props.export;
@@ -257,7 +260,6 @@ function Main(props) {
             props.onCarsData("generation", [])
             setCheckedGenerations([]);
             newChecked.length === 0 ? createDataList(isModel) : createGenerationlist(newChecked);
-            // props.onSearchCarsData(newChecked, "model", isMark);
             props.onCarsData("model", newChecked);
             return setCheckedModels(newChecked);
         } else if (currentCategory === "generation-list") {
@@ -359,7 +361,7 @@ function Main(props) {
         clearModelList();
         const targetBox = document.querySelector(".model-list");
         targetBox.classList.add("model-list__category");
-        props.onCategory.map(elem => {
+        props.isCategory.map(elem => {
             if (elem === "") {
                 return
             } else {
@@ -378,7 +380,7 @@ function Main(props) {
     //получение ширины окна для формирования сетки карточек
     useEffect(() => {
         const listWidth = document.querySelector(".models").offsetWidth;
-        document.querySelector(".main-form_params-item").style.width = `${listWidth}/3`;
+        document.querySelector(".main-form_params-list").style.width = `${listWidth}/3`;
     }, [window.innerWidth])
 
     //ограничиваем количество символов для вывода в окно
@@ -396,7 +398,8 @@ function Main(props) {
     }
 
     function handleSubmit() {
-        if (isMark.length > 0) {
+        const search = document.querySelector("#search-main").value;
+        if (isMark.length > 0 || search !== "") {
             document.querySelector(".main-form_model").classList.remove("main-form_select__disabled");
             document.querySelector(".main-news").classList.add("main-news-disabled");
             document.querySelector(".models").classList.remove("models-disabled");
@@ -405,16 +408,17 @@ function Main(props) {
             document.querySelector(".main-news").classList.remove("main-news-disabled");
             document.querySelector(".models").classList.add("models-disabled");
         }
-        if (document.querySelector("#products")){
+        if (document.querySelector("#products")) {
             document.querySelector("#products").value = "";
-        } 
-        if (document.querySelector("#search")){
+        }
+        if (document.querySelector("#search")) {
             document.querySelector("#search").value = "";
         }
-        if (document.querySelector("#search-elements")){
+        if (document.querySelector("#search-elements")) {
             document.querySelector("#search-elements").value = "";
         }
-        return props.onSearchCarsData(isMark, checkedModels, checkedGenerations);
+
+        return props.onSearchCarsData(isMark, checkedModels, checkedGenerations, search);
     }
 
     function addViewEvent(e) {
@@ -422,7 +426,20 @@ function Main(props) {
         const elements = document.querySelectorAll(".main-form_select__text");
     }
 
-    useEffect(()=>{
+    function handleEnterParams(e) {
+        const element = e.target;
+        let checkedData = "";;
+        if (e.target.classList.contains("main-form_arrow")) {
+            checkedData = element.parentNode.querySelector(".main-form_params-element").textContent;
+            return element.src = plus;
+        } else if (e.target.classList.contains("main-form_params-element")){
+            checkedData = element.textContent;
+            return element.parentNode.querySelector(".main-form_arrow").src = plus;
+        }
+        return checkedData;
+    }
+
+    useEffect(() => {
         return setSearched(props.isSearch);
     }, [props.isSearch])
 
@@ -459,7 +476,7 @@ function Main(props) {
                             {isMark.length !== 0 &&
                                 isModel.map((car, index) => {
                                     if (car === "") {
-                                        return
+                                        return "";
                                     } else {
                                         return <li className="main-form_option-item" key={index} onClick={handleCheck}>
                                             <p className="main-form_option__text">{car}</p>
@@ -493,10 +510,10 @@ function Main(props) {
                     <div className="main-form_params-container main-form_params-container-disable">
                         <p className="main-form_category-text">Поиск по категориям</p>
                         <ul className="main-form_params-list">
-                            {props.onCategory.map((category, index) => {
-                                return <li className="main-form_params-item" key={index}>
+                            {props.isCategory.map((category, index) => {
+                                return <li className="main-form_params-item" key={index} onClick={handleEnterParams}>
                                     <p className="main-form_params-element">{category}</p>
-                                    <span className="main-form_arrow"></span>
+                                    <img src={arrowRight} className="main-form_arrow" alt="arrow"/>
                                 </li>
                             })}
                         </ul>
@@ -507,18 +524,18 @@ function Main(props) {
                 <News slideNews={slideNews} arrow={arrow} />
                 <ModelList />
                 {props.isSearch.length > 0 && <Products
-                    mark={isMark} model={checkedModels} generation={checkedGenerations} onSearch={props.onSearch} isSearch={isSearched} onAddToCart={props.onAddToCart}/>}
+                    mark={isMark} model={checkedModels} generation={checkedGenerations} onCarsData={props.onSearchCarsData} isSearch={isSearched} onAddToCart={props.onAddToCart} />}
             </div>
         </div>
         <div className="main_contacts-container">
-            <div className="main_contacts-menu">
+            <Link to="/menu" className="main_contacts-menu">
                 <span className="main_contacts-img-menu" />
                 <p className="main_contacts-name">Меню</p>
-            </div>
-            <div className="main_contacts">
+            </Link>
+            <Link to="/contacts" className="main_contacts">
                 <span className="main_contacts-img-phone" />
                 <p className="main_contacts-name">Контакты</p>
-            </div>
+            </Link>
         </div>
     </section>;
 }

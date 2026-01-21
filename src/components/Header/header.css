@@ -277,6 +277,11 @@
   height: 18px;
 }
 
+.header_contacts{
+  display: flex;
+}
+
+
 @media screen and (max-width: 1424px) {
   .header {
     max-width: 1020px;
@@ -318,6 +323,7 @@
     max-width: 728px;
     height: 80px;
     align-items: center;
+    box-shadow: 0 1px 3px #cacaca;
   }
 
   .header_location {

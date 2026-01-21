@@ -4,9 +4,22 @@ import { useEffect, useState } from "react";
 function Brands(props) {
 
     const [categories, setCategory] = useState(props.category);
+    const [isAllMarks, setAllMarks] = useState([]);
     const currentCategory = props.category;
+    function createMarksList() {
+        const marks = [];
+        props.marks.map((data) => {
+            if (!marks.includes(data.mark)) {
+                marks.push(data.mark);
+            }
+        })
+        marks.sort();
+        return setAllMarks(marks);
+    }
 
-    const searchAuto = props.searchAuto;
+    useEffect(() => {
+        return createMarksList();
+    }, [props.marks])
 
 
     function viewMarks(e) {
@@ -23,32 +36,6 @@ function Brands(props) {
         }
     }
 
-    function renderMarks(categories) {
-        const elemForRemove = document.querySelectorAll(".brands_item");
-        elemForRemove.forEach(elem => elem.remove());
-        const parenElement = document.querySelector(".brands_list");
-        categories.forEach((elem, index) => {
-            const element = document.createElement("li");
-            element.classList.add("brands_item");
-            element.key = index;
-            const elementText = document.createElement("p");
-            elementText.classList.add("brands_element");
-            elementText.textContent = elem;
-            element.appendChild(elementText);
-            return parenElement.appendChild(element);
-        })
-    }
-
-    useEffect(() => {
-        if (categories.length > 0) {
-            return renderMarks(categories);
-        }
-        if (currentCategory.length > 0 ) {
-            return renderMarks(currentCategory);
-        }
-        return;
-    }, [categories, currentCategory])
-
     return (
         <section className="brands">
             <div className="brands_select-container">
@@ -57,6 +44,12 @@ function Brands(props) {
             </div>
             <div className="brands_container">
                 <ul className="brands_list">
+                    {isAllMarks.map((elem, index) => {
+                        return <li className={`brands_item brands_item__${index}`} id={`brands_${index}`}>
+                            <p className="brands_element">{elem}</p>
+                        </li>
+                    })
+                    }
                 </ul>
             </div>
         </section>
