@@ -45,7 +45,7 @@ function Brands(props) {
             <div className="brands_container">
                 <ul className="brands_list">
                     {isAllMarks.map((elem, index) => {
-                        return <li className={`brands_item brands_item__${index}`} id={`brands_${index}`}>
+                        return <li className={`brands_item brands_item__${index}`} key={`brands_${index}`}>
                             <p className="brands_element">{elem}</p>
                         </li>
                     })

@@ -413,6 +413,7 @@
     align-items: center;
     gap: 8px;
     background-color: #ffffff;
+    text-decoration: none;
   }
 
   .main_contacts-img-menu {

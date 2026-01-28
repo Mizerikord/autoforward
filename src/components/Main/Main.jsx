@@ -22,14 +22,16 @@ function Main(props) {
     const [checkedModels, setCheckedModels] = useState([]);
     const [checkedGenerations, setCheckedGenerations] = useState([]);
     const [isSearched, setSearched] = useState();
+    const [isCategory, setCategory] = useState([]);
 
     function filterData(data) {
-        const newArrData = []
+        const newArrData = [];
         Object.values(exports).map((elem) => {
             if (!newArrData.includes(elem[data])) {
                 newArrData.push(elem[data]);
             }
         })
+        newArrData.sort();
         setAllMarks(newArrData);
     }
 
@@ -198,18 +200,6 @@ function Main(props) {
             document.querySelector(".main-form_option-list__generation").classList.add("main-form_option-list__disbled");
         }
     }
-
-    // useEffect(() => {
-    //     if (isMark.length > 0) {
-    //         document.querySelector(".main-form_model").classList.remove("main-form_select__disabled");
-    //         document.querySelector(".main-news").classList.add("main-news-disabled");
-    //         document.querySelector(".models").classList.remove("models-disabled");
-    //     }
-    //     else {
-    //         document.querySelector(".main-news").classList.remove("main-news-disabled");
-    //         document.querySelector(".models").classList.add("models-disabled");
-    //     }
-    // }, [isModel, isGeneration, isMark])
 
     //формирование наполнения вкладки
     function handleCheck(e) {
@@ -418,7 +408,7 @@ function Main(props) {
             document.querySelector("#search-elements").value = "";
         }
 
-        return props.onSearchCarsData(isMark, checkedModels, checkedGenerations, search);
+        return props.onSearchCarsData(isMark, checkedModels, checkedGenerations, search, isCategory);
     }
 
     function addViewEvent(e) {
@@ -426,18 +416,64 @@ function Main(props) {
         const elements = document.querySelectorAll(".main-form_select__text");
     }
 
+    //Выбор категории
     function handleEnterParams(e) {
         const element = e.target;
-        let checkedData = "";;
+        let checkedData = "";
+        let curCategory = [];
         if (e.target.classList.contains("main-form_arrow")) {
             checkedData = element.parentNode.querySelector(".main-form_params-element").textContent;
-            return element.src = plus;
-        } else if (e.target.classList.contains("main-form_params-element")){
+            if (isCategory.length === 0) {
+                curCategory.push(checkedData);
+                element.src = plus;
+                setCategory(curCategory);
+            } else {
+                if (isCategory.includes(checkedData)) {
+                    isCategory.map(elem => {
+                        return !(elem === checkedData) && curCategory.push(elem);
+                    })
+                    element.src = arrowRight;
+                    setCategory(curCategory);
+                } else {
+                    isCategory.map(elem => {
+                        return curCategory.push(elem);
+                    })
+                    curCategory.push(checkedData);
+                    element.src = plus;
+                    setCategory(curCategory);
+                }
+            }
+            return props.onCarsData("category", curCategory);
+        } else if (e.target.classList.contains("main-form_params-element")) {
             checkedData = element.textContent;
-            return element.parentNode.querySelector(".main-form_arrow").src = plus;
+            if (isCategory.length === 0) {
+                curCategory.push(checkedData);
+                element.parentNode.querySelector(".main-form_arrow").src = plus;
+                setCategory(curCategory);
+            } else {
+                if (isCategory.includes(checkedData)) {
+                    isCategory.map(elem => {
+                        !(elem === checkedData) && curCategory.push(elem);
+                        return ""
+                    })
+                    element.parentNode.querySelector(".main-form_arrow").src = arrowRight;
+                    setCategory(curCategory);
+                } else {
+                    isCategory.map(elem => {
+                        return curCategory.push(elem);
+                    })
+                    curCategory.push(checkedData);
+                    element.parentNode.querySelector(".main-form_arrow").src = plus;
+                    setCategory(curCategory);
+                }
+            }
         }
-        return checkedData;
+        return props.onCarsData("category", curCategory);
     }
+    //Установка значений категории
+    useEffect(() => {
+        return setCategory(props.currentCategory);
+    }, [props.currentCategory])
 
     useEffect(() => {
         return setSearched(props.isSearch);
@@ -513,7 +549,7 @@ function Main(props) {
                             {props.isCategory.map((category, index) => {
                                 return <li className="main-form_params-item" key={index} onClick={handleEnterParams}>
                                     <p className="main-form_params-element">{category}</p>
-                                    <img src={arrowRight} className="main-form_arrow" alt="arrow"/>
+                                    <img src={arrowRight} className="main-form_arrow" alt="arrow" />
                                 </li>
                             })}
                         </ul>

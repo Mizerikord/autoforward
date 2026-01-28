@@ -14,7 +14,9 @@ import Contacts from "./Contacts/Contacts";
 import Menu from "./Menu/Menu";
 import PopupCart from "./PopupCart/PopupCart";
 import Api from "../utils/Api";
+import sitiesList from "../utils/sitiesList";
 import JSONData from "../utils/export-data";
+
 
 function App() {
   const categoryList = SearchType;
@@ -26,6 +28,7 @@ function App() {
   const [isExportData, setExportData] = useState();
   const [isSearch, setSearch] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [isCategory, setCategory] = useState([]);
   const [isMark, setMark] = useState([]);
   const [checkedModels, setCheckedModels] = useState([]);
   const [checkedGenerations, setCheckedGenerations] = useState([]);
@@ -37,18 +40,18 @@ function App() {
   }, []);
 
   function getApiData() {
-    setExportData(JSONData);
-    setLoading(true);
-    createCategoryList(JSONData);
-    // Api.getData()
-    //   .then((data) => {
-    //     createCategoryList(data);
-    //     setExportData(data);
-    //     setLoading(true);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    // setExportData(JSONData);
+    // setLoading(true);
+    // createCategoryList(JSONData);
+    Api.getData()
+      .then((data) => {
+        createCategoryList(data);
+        setExportData(data);
+        setLoading(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 
   function showProducts() {
@@ -69,52 +72,58 @@ function App() {
     return setCategories(category);
   }
 
-  function searchCarsData(mark, model, generation, inputValue) {
+  function searchCarsData(mark, model, generation, inputValue, category) {
+    //поиск по марке
     function findMark(checkData, mark) {
-      const searchArrays = [];
-      isExportData.map((data) => {
-        if (checkData.length === 0) {
-          if (data.mark.toUpperCase().indexOf(mark[0].toUpperCase()) >= 0) {
-            return searchArrays.push(data);
-          }
-        } else {
-          if (
-            data.mark.toUpperCase().indexOf(checkData[0].toUpperCase()) >= 0
-          ) {
-            return searchArrays.push(data);
-          }
-        }
-      });
-      searchArrays.sort();
-      return searchArrays;
-    }
-    function findModel(marks, model) {
-      const searchArrays = [];
-      marks.map((element) => {
-        model.map((mod) => {
-          if (mod.indexOf(element.model) >= 0) {
-            return searchArrays.push(element);
-          }
+      if (mark.length !== 0 && checkData.length !== 0) {
+        const searchArrays = [];
+        checkData.map((data) => {
+          data.mark.toUpperCase().indexOf(mark[0].toUpperCase()) >= 0 &&
+            searchArrays.push(data);
         });
-      });
-      searchArrays.sort();
-      return searchArrays;
+        searchArrays.sort();
+        return searchArrays;
+      } else {
+        return checkData;
+      }
     }
-    function findGeneration(models, generation) {
-      const searchArrays = [];
-      models.map((element) => {
-        generation.map((gen) => {
-          if (gen.indexOf(element.generation) >= 0) {
-            return searchArrays.push(element);
-          }
+    //поиск по модели
+    function findModel(currentArr, model) {
+      if (model.length !== 0 && currentArr.length !== 0) {
+        const searchArrays = [];
+        currentArr.map((element) => {
+          model.map((mod) => {
+            if (mod.indexOf(element.model) >= 0) {
+              return searchArrays.push(element);
+            }
+          });
         });
-      });
-      searchArrays.sort();
-      return searchArrays;
+        searchArrays.sort();
+        return searchArrays;
+      } else {
+        return currentArr;
+      }
     }
-
+    //поиск по поколению
+    function findGeneration(currentArr, generation) {
+      if (generation.length !== 0 && currentArr.length !== 0) {
+        const searchArrays = [];
+        currentArr.map((element) => {
+          generation.map((gen) => {
+            if (gen.indexOf(element.generation) >= 0) {
+              return searchArrays.push(element);
+            }
+          });
+        });
+        searchArrays.sort();
+        return searchArrays;
+      } else {
+        return currentArr;
+      }
+    }
+    //поиск по строке поиска
     function searchValue(inputValue, searchArray) {
-      if (inputValue) {
+      if (inputValue && inputValue.length !== 0) {
         const currentData = [];
         const searchData =
           searchArray.length === 0 ? isExportData : searchArray;
@@ -131,58 +140,42 @@ function App() {
           });
         });
         return currentData;
-      }
-      return;
-    }
-    if (mark.length === 0) {
-      if (inputValue !== "") {
-        const resultArr = searchValue(inputValue, isExportData);
-        setSearch(resultArr);
-        return resultArr;
       } else {
-        return isExportData;
-      }
-    } else if (mark.length !== 0 && model.length === 0) {
-      if (inputValue !== "") {
-        const searchArray = findMark(mark);
-        const resultArr = searchValue(inputValue, searchArray);
-        setSearch(resultArr);
-        return resultArr;
-      } else {
-        const searchArray = findMark(mark);
-        setSearch(searchArray);
         return searchArray;
       }
-    } else if (model.length !== 0 && generation.length === 0) {
-      if (inputValue !== "") {
-        const searchMarks = findMark(mark);
-        const searchModels = findModel(searchMarks, model);
-        const resultArr = searchValue(inputValue, searchModels);
-        setSearch(resultArr);
-        return resultArr;
-      } else {
-        const searchMarks = findMark(mark);
-        const searchModels = findModel(searchMarks, model);
-        setSearch(searchModels);
-        return searchModels;
-      }
-    } else if (generation.length !== 0) {
-      if (inputValue !== "") {
-        const searchMarks = findMark(mark);
-        const searchModels = findModel(searchMarks, model);
-        const searchGeneration = findGeneration(searchModels, generation);
-        setSearch(searchGeneration);
-        return searchGeneration;
-      }
-      const searchMarks = findMark(mark);
-      const searchModels = findModel(searchMarks, model);
-      const searchGeneration = findGeneration(searchModels, generation);
-      const resultArr = searchValue(inputValue, searchGeneration);
-      setSearch(resultArr);
-      return resultArr;
     }
+    //поиск по доп. парамерам
+    function findCategory(currentArr, category) {
+      if (category !== undefined && currentArr.length !== 0) {
+        if (category.length !== 0) {
+          const searchArrays = [];
+          currentArr.map((element) => {
+            category.map((cat) => {
+              if (cat.indexOf(element.category) >= 0) {
+                return searchArrays.push(element);
+              }
+            });
+          });
+          searchArrays.sort();
+          return searchArrays;
+        } else {
+          return currentArr;
+        }
+      } else {
+        return currentArr;
+      }
+    }
+    //пошаговый поиск
+    let resultData = findCategory(isExportData, category);
+    resultData = searchValue(inputValue, resultData);
+    resultData = findMark(resultData, mark);
+    resultData = findModel(resultData, model);
+    resultData = findGeneration(resultData, generation);
+    setSearch(resultData);
+    return resultData;
   }
 
+  //Изменение данных в стэйте хранения
   function setCarsData(element, data) {
     if (element === "mark") {
       return setMark(data);
@@ -190,6 +183,8 @@ function App() {
       return setCheckedModels(data);
     } else if (element === "generation") {
       return setCheckedGenerations(data);
+    } else if (element === "category") {
+      return setCategory(data);
     }
   }
 
@@ -216,12 +211,11 @@ function App() {
           generation={checkedGenerations}
           onOpen={openPopup}
           isCurrentCart={isCart}
+          isSities={sitiesList}
         />
         <Routes>
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/menu" element={<Menu isCategory={categories} />} />
-
-          {/* Главная страница */}
           <Route
             path="/"
             element={
@@ -229,6 +223,7 @@ function App() {
                 <Main
                   onCarsData={setCarsData}
                   isCategory={categories}
+                  currentCategory={isCategory}
                   onShow={showProducts}
                   export={isExportData}
                   onSearchCarsData={searchCarsData}

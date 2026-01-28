@@ -138,10 +138,12 @@
   flex-direction: column;
   align-items: flex-start;
   justify-content: space-between;
+  width: 100%;
 }
 
 .products_card-img {
-  width: 100%;
+  align-self: center;
+  width: auto;
   height: 250px;
 }
 

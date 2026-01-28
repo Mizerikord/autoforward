@@ -2,6 +2,7 @@ import "./header.css";
 import { Link } from "react-router-dom";
 import cart from "../../media/cart.svg";
 import { useEffect, useState } from "react";
+import sityLogo from "../../media/geo_1.png";
 
 function Header(props) {
 
@@ -33,7 +34,14 @@ function Header(props) {
 
     return <section className="header">
         <div className="header_logo-container">
-            <span className="header_location">Москва</span>
+            <div className="header_location-container"><img className="header_location-img" src={sityLogo} alt="" />
+                <select className="header_location">
+                    {props.isSities.map((elem, index) => {
+                        return <option className="header_location-item" key={index}>{elem}</option>
+                    })}
+                </select>
+                </div>
+            {/* <span className="header_location">Москва</span> */}
             <Link to="/" className="header_logo"></Link>
         </div>
         <div className="header_navbar-container">
