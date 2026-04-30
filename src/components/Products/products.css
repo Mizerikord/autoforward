@@ -21,6 +21,7 @@
   background: linear-gradient(#ffffff 0 0) padding-box,
     linear-gradient(90deg, #de556f, #48204e) border-box;
   border: 1px solid transparent;
+  padding: 0 10px;
 }
 
 .products_btn {
@@ -145,6 +146,7 @@
   align-self: center;
   width: auto;
   height: 250px;
+  min-height: 250px;
 }
 
 .products_card-description-container{
@@ -157,6 +159,7 @@
 
 .products_card-description-list{
   width: 100%;
+  height: 100%;
   list-style-type: none;
   padding: 0;
   margin: 0;
@@ -220,6 +223,7 @@
   .products_card-img {
     width: 100%;
     height: 220px;
+    min-height: 220px;
   }
 }
 
@@ -243,6 +247,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
+    scrollbar-width: none;
+    width: 100%;
   }
 
   .products_card-img {
@@ -250,5 +256,12 @@
     width: 100%;
     aspect-ratio: 16/9;
     height: auto;
+    min-height: auto;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .products_card-item{
+    width: 300px;
   }
 }

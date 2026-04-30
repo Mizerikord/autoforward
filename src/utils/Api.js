@@ -19,12 +19,30 @@ class dataApi {
     });
     return cards.then(this._getAnswer);
   }
+
+  postEmail(emailData, order) {
+    console.log(emailData, order);
+    
+    return fetch(`${this._addres}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: emailData.email,
+        phone: emailData.phone,
+        city: emailData.city,
+        inn: emailData.inn,
+        products: order
+      }),
+    }).then(this._getAnswer);
+  }
 }
 
 const Api = new dataApi({
   baseUrl: "http://localhost:3001/",
   headers: {
-      'Content-Type': 'application/json'
+    "Content-Type": "application/json",
   },
 });
 

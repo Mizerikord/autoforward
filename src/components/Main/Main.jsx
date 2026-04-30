@@ -9,7 +9,6 @@ import ModelList from "./ModelList/ModelList";
 import Products from "../Products/Products";
 import arrowRight from "../../media/arrow-right.png";
 import plus from "../../media/plus.png";
-// import categoryElements from "../../utils/categories";
 
 function Main(props) {
     const exports = props.export;
@@ -23,6 +22,7 @@ function Main(props) {
     const [checkedGenerations, setCheckedGenerations] = useState([]);
     const [isSearched, setSearched] = useState();
     const [isCategory, setCategory] = useState([]);
+    const [query, setQuery] = useState('');
 
     function filterData(data) {
         const newArrData = [];
@@ -52,24 +52,24 @@ function Main(props) {
 
     useEffect(() => {
         // setSearched(exports);
-        filterData("mark");
+        filterData("Марка");
         return enterContent();
     }, []);
 
 
     function handleChangeMark(e) {
-        if (e.target.name === "mark") {
+        if (e.target.name === "Марка") {
             document.querySelectorAll(".main-form_option").forEach(el => {
                 if (el.parentNode.classList.contains("main-form_mark")) {
                     return;
                 }
                 setModel("Модель");
-                setGeneration("Поколение");
+                setGeneration("Год");
                 el.remove();
             });
             const option = [];
             exports.map((elem) => {
-                if (isMark.toUpperCase === elem.mark.toUpperCase) {
+                if (isMark.toUpperCase === elem["Марка"].toUpperCase) {
                     return option.push(elem);
                 }
             })
@@ -77,26 +77,28 @@ function Main(props) {
             option.forEach((elem, index) => {
                 const newOption = document.createElement("option");
                 newOption.classList.add("main-form_option");
-                newOption.value = elem.model;
+                newOption.value = elem["Марка"];
                 newOption.key = index;
-                newOption.textContent = elem.model;
+                newOption.textContent = elem["Марка"];
                 document.querySelector(".main-form_model").appendChild(newOption);
             }
             )
             if (isMark.length === 0) {
-                props.onCarsData("mark", [e.target.value]);
+                props.onCarsData("Марка", [e.target.value]);
                 return setMark([e.target.value]);
             }
             if (isMark.includes(e.target.value)) {
                 return;
             }
             if (isMark.length > 0) {
-                props.onCarsData("mark", [e.target.value]);
+                props.onCarsData("Марка", [e.target.value]);
                 return setMark(e.target.value);
             }
+
+
             return
         }
-        if (e.target.name === "model") {
+        if (e.target.name === "Модель") {
             document.querySelectorAll(".main-form_option").forEach(el => {
                 if (el.parentNode.classList.contains("main-form_mark")) {
                     return;
@@ -104,12 +106,12 @@ function Main(props) {
                 if (el.parentNode.classList.contains("main-form_model")) {
                     return;
                 }
-                setGeneration("Поколение");
+                setGeneration("Год");
                 el.remove();
             });
             const option = [];
             exports.map((elem) => {
-                if (isModel.toUpperCase === elem.model.toUpperCase) {
+                if (isModel.toUpperCase === elem["Модель"].toUpperCase) {
                     return option.push(elem);
                 }
             })
@@ -117,15 +119,15 @@ function Main(props) {
             option.forEach((elem, index) => {
                 const newOption = document.createElement("option");
                 newOption.classList.add("main-form_option");
-                newOption.value = elem.generation;
+                newOption.value = elem["Год"];
                 newOption.key = index;
-                newOption.textContent = elem.generation;
+                newOption.textContent = elem["Год"];
                 document.querySelector(".main-form_generation").appendChild(newOption);
             }
             )
             return setModel(e.target.value);
         }
-        if (e.target.name === "generation") {
+        if (e.target.name === "Год") {
             return setGeneration(e.target.value);
         }
     }
@@ -215,11 +217,11 @@ function Main(props) {
             if (modelList.classList.contains("model-list__category")) {
                 modelList.classList.remove("model-list__category");
             }
-            props.onCarsData("mark", [currentTarget.textContent]);
+            props.onCarsData("Марка", [currentTarget.textContent]);
             setMark([currentTarget.textContent]);
-            props.onCarsData("model", [])
+            props.onCarsData("Модель", [])
             setCheckedModels([]);
-            props.onCarsData("generation", [])
+            props.onCarsData("Год", [])
             setCheckedGenerations([]);
             document.querySelector(".main-form_option-list__marks").classList.add("main-form_option-list__disbled");
             return createModelList(currentTarget.textContent)
@@ -247,10 +249,10 @@ function Main(props) {
                 newChecked.push(currentmodel);
                 newChecked.sort();
             }
-            props.onCarsData("generation", [])
+            props.onCarsData("Год", [])
             setCheckedGenerations([]);
             newChecked.length === 0 ? createDataList(isModel) : createGenerationlist(newChecked);
-            props.onCarsData("model", newChecked);
+            props.onCarsData("Модель", newChecked);
             return setCheckedModels(newChecked);
         } else if (currentCategory === "generation-list") {
             const currentGeneration = currentTarget.textContent;
@@ -274,7 +276,7 @@ function Main(props) {
                 newChecked.sort();
             }
             createParametersList();
-            props.onCarsData("generation", []);
+            props.onCarsData("Год", []);
             return setCheckedGenerations(newChecked);
         }
     }
@@ -292,13 +294,13 @@ function Main(props) {
         clearModelList();
         let modelList = [];
         exports.map((elem => {
-            if (elem.mark === mark) {
+            if (elem["Марка"] === mark) {
                 if (modelList.length === 0) {
-                    modelList.push(elem.model);
-                } else if (modelList.includes(elem.model)) {
+                    modelList.push(elem["Модель"]);
+                } else if (modelList.includes(elem["Модель"])) {
                     return "";
                 } else {
-                    modelList.push(elem.model);
+                    modelList.push(elem["Модель"]);
                 }
             }
         }))
@@ -312,10 +314,10 @@ function Main(props) {
         const generationList = [];
         model.map(curModel => {
             exports.map(elem => {
-                if (elem.model === curModel) {
-                    if (!generationList.includes(elem.generation)) {
-                        return generationList.push(elem.generation);
-                    } else if (!elem.generation) {
+                if (elem["Модель"] === curModel) {
+                    if (!generationList.includes(elem["Год"])) {
+                        return generationList.push(elem["Год"]);
+                    } else if (!elem["Год"]) {
                         return;
                     } else {
                         return;
@@ -479,6 +481,17 @@ function Main(props) {
         return setSearched(props.isSearch);
     }, [props.isSearch])
 
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return query.trim() !== "" ? handleSubmit() : "";
+        }
+    }
+
+    const handleInputChange = (event) => {
+        return setQuery(event.target.value);
+    };
+
     return <section className="main">
         <h1 className="main-title">Поиск б/у и новых автозапчастей онлайн с разбора по всей России</h1>
         <p className="main-subtitle">Выбирайте из 24 396 745 б/у запчастей по доступным ценам в одном магазине</p>
@@ -486,7 +499,7 @@ function Main(props) {
             <div className="main-search">
                 <form action="" className="main-search-form">
                     <div className="main-form_search-container">
-                        <input type="search" id="search-main" className="main-form_search" placeholder="Марка, запчасть, артикул, VIN " />
+                        <input type="search" id="search-main" className="main-form_search" placeholder="Марка, запчасть, артикул, VIN " value={query} onKeyDown={handleKeyPress} onChange={handleInputChange} />
                         <span className="main-form_search-img"></span>
                     </div>
                     <p className="main-form_search-description">Поиск по авто</p>
@@ -516,7 +529,7 @@ function Main(props) {
                                     } else {
                                         return <li className="main-form_option-item" key={index} onClick={handleCheck}>
                                             <p className="main-form_option__text">{car}</p>
-                                            <input className="main-form_option" type="checkbox" value={car.model} />
+                                            <input className="main-form_option" type="checkbox" value={car["Марка"]} />
                                         </li>
                                     }
                                 })}
@@ -533,7 +546,7 @@ function Main(props) {
                                     } else {
                                         return <li className="main-form_option-item main-form_option-item-generation" key={index} onClick={handleCheck}>
                                             <p className="main-form_option__text main-form_option__text-generation">{gen}</p>
-                                            <input className="main-form_option" type="checkbox" value={gen.generation} />
+                                            <input className="main-form_option" type="checkbox" value={gen["Год"]} />
                                         </li>
                                     }
 

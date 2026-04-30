@@ -8,41 +8,59 @@ function Header(props) {
 
     const [isCount, setCount] = useState("0");
     const [isCost, setCost] = useState("0");
+    const [query, setQuery] = useState('');
 
     function handleSubmit() {
         const inputValue = document.querySelector(".header_navbar-search").value;
-        return props.onSearchCarsData(props.mark, props.model, props.generation, inputValue);
+        return props.onSearchCarsData(props["Марка"], props["Мадель"], props["Год"], inputValue);
     }
 
     function openCart() {
         return props.onOpen();
     }
-
+    //Отображение цены и количества
     useEffect(() => {
         setCost(0);
         function sumPrice(cart) {
             let sum = 0;
+            let count = 0;
             cart.map((card) => {
-                return sum = Number(card.price) + sum;
+                count = card["Количество"] + count;
+                return sum = Number(card["Цена"]) * Number(card["Количество"]) + sum;
             })
-            return sum;
+            return {sum: sum, count: count};
         }
         const totalCost = sumPrice(props.isCurrentCart);
-        setCount(props.isCurrentCart.length);
-        return setCost(totalCost);
-    }, [props.isCurrentCart])
+        setCount(totalCost.count);
+        return setCost(totalCost.sum);
+    }, [props.isCurrentCart, props.isCardCount]);
+
+    function handleCheckCity(e){
+        return props.onCity(e.target.querySelectorAll("option:checked")[0].value);
+    }
+
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return query.trim() !== "" ? handleSubmit() : "";
+        }
+    }
+
+    const handleInputChange = (event) => {
+        return setQuery(event.target.value);
+    };
 
     return <section className="header">
         <div className="header_logo-container">
             <div className="header_location-container"><img className="header_location-img" src={sityLogo} alt="" />
-                <select className="header_location">
+                <select className="header_location" onClick={handleCheckCity}>
                     {props.isSities.map((elem, index) => {
                         return <option className="header_location-item" key={index}>{elem}</option>
                     })}
                 </select>
-                </div>
+            </div>
             {/* <span className="header_location">Москва</span> */}
-            <Link to="/" className="header_logo"></Link>
+            <Link to="autoforward/" className="header_logo"></Link>
         </div>
         <div className="header_navbar-container">
             <div className="header_navbar-contacts">
@@ -73,7 +91,7 @@ function Header(props) {
                 <p className="header_navbar-search-container">
 
                     <input type="search" name="search" id="search" className="header_navbar-search"
-                        placeholder="Марка, запчасть, артикул или VIN" />
+                        placeholder="Марка, запчасть, артикул или VIN" onKeyDown={handleKeyPress} onChange={handleInputChange}/>
                     <span className="header_navbar-search-img"></span>
                 </p>
                 <input type="button" value="Найти" className="header_navbar-button" onClick={handleSubmit} />

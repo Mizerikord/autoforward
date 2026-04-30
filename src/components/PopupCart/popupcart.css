@@ -11,7 +11,7 @@
   z-index: 99;
 }
 
-.popup-cart-container {
+.popup-cart-box {
   width: 70%;
   height: 70%;
   background-color: #ffffff;
@@ -19,7 +19,81 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-start;
   position: relative;
+}
+
+.popup-data {
+  width: 90%;
+  height: 80%;
+  border-radius: 10px;
+  display: flex;
+  align-items: flex-start;
+  padding-right: 15px;
+  justify-content: space-around;
+  margin-top: 20px;
+  overflow: hidden;
+  overflow-y: auto;
+}
+
+.popup-cart-container {
+  min-width: 330px;
+  min-height: 300px;
+  height: 100%;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 15px;
+  justify-content: space-between;
+}
+
+.popup_form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 45%;
+}
+
+.popup_form-input {
+  width: calc(80% - 20px);
+  outline: none;
+  border-radius: 5px;
+  height: 28px;
+  font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  padding: 0 10px;
+}
+
+.popup-cart_btn {
+  color: #ffffff;
+  width: 80%;
+  height: 40px;
+  background: linear-gradient(90deg, #de556f, #48204e);
+  border: none;
+  outline: none;
+  border-radius: 5px;
+  margin: 20px 0 20px;
+  font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 16px;
+  line-height: 100%;
+  letter-spacing: 0%;
+  justify-self: flex-end;
+  cursor: pointer;
+  padding: 0 10px;
+}
+
+.popup-btn-disabled {
+  cursor: default;
+  background: linear-gradient(90deg, #5e5e5e, #48204e);
 }
 
 .popup-cart_close {
@@ -37,27 +111,25 @@
 }
 
 .popup-cart_list {
+  width: 330px;
   list-style-type: none;
   margin: 20px 0 0;
-  padding: 0;
+  padding: 0 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: rgb(224, 224, 224);
-  width: 70%;
   height: 70%;
   overflow-y: auto;
 }
 
-.popup-cart_btn {
-  color: #ffffff;
-  width: 50%;
-  height: 40px;
-  background: linear-gradient(90deg, #de556f, #48204e);
-  border: none;
-  outline: none;
-  border-radius: 5px;
-  margin: 20px 0 20px;
+.popup-cart_total-container {
+  width: 25%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.popup-cart_total {
   font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
   font-style: normal;
   font-weight: 300;
@@ -66,18 +138,78 @@
   letter-spacing: 0%;
 }
 
-.popup-cart_total-container{
-    width: 50%;
-    display: flex;
+.popup-policy{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.polycy-check{
+  width: 20px;
+  height: 20px;
+}
+
+.polycy-link{
+  color: #5e5e5e;
+  text-decoration: none;
+  color: #de556f;
+}
+
+@media screen and (max-width: 1240px) {
+  .popup-data {
+    width: 90%;
+    height: 100%;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    padding-right: 0;
+    justify-content: flex-start;
+    margin-top: 20px;
+  }
+
+  .popup_form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .popup-cart_total-container {
+    width: 50%;
+  }
 }
 
-.popup-cart_total{
-  font-family: "RobotoCondensed", Arial, Helvetica, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 16px;
-  line-height: 100%;
-  letter-spacing: 0%;
+@media screen and (max-width: 700px) {
+  .popup-data {
+    width: 100%;
+  }
+
+  .popup-cart-box {
+    width: 100%;
+    height: 100%;
+  }
+
+  .popup-cart_list {
+    width: 300px;
+    overflow-y: visible;
+    padding: 0;
+  }
+  .popup-data::-webkit-scrollbar {
+    width: 0;
+  }
+
+  .popup-cart-container {
+    padding-right: 0;
+  }
+}
+
+@media screen and (max-width: 460px) {
+  .popup-cart{
+    overflow-y: none;
+  }
+
+  .popup-cart_total-container {
+    width: 95%;
+    overflow: hidden;
+  }
 }

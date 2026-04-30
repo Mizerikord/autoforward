@@ -17,7 +17,6 @@ import Api from "../utils/Api";
 import sitiesList from "../utils/sitiesList";
 import JSONData from "../utils/export-data";
 
-
 function App() {
   const categoryList = SearchType;
   const searchAuto = SearchAuto;
@@ -34,6 +33,8 @@ function App() {
   const [checkedGenerations, setCheckedGenerations] = useState([]);
   const [isOpenPopup, setOpenPopup] = useState(false);
   const [isCart, setCart] = useState([]);
+  const [isCardCount, setCartCount] = useState(0);
+  const [isCurrentCity, setCurretCity] = useState("");
 
   useEffect(() => {
     return getApiData();
@@ -45,8 +46,8 @@ function App() {
     // createCategoryList(JSONData);
     Api.getData()
       .then((data) => {
-        createCategoryList(data);
-        setExportData(data);
+        createCategoryList(dataParse(data));
+        setExportData(dataParse(data));
         setLoading(true);
       })
       .catch((err) => {
@@ -54,8 +55,41 @@ function App() {
       });
   }
 
+  function dataParse(baseData) {
+    const regex = /"/g;
+    const newData = [];
+    const firstStr = Object.keys(baseData[0])[0].split('";"');
+    // newData.push(firstStr);
+    baseData.map((elem) => {
+      const objElementData = {};
+      let valueSplit = Object.values(elem)[0].split(";");
+      for (let i = 0; i < firstStr.length; i++) {
+        objElementData[firstStr[i].replace(regex, "")] = valueSplit[i].replace(
+          regex,
+          "",
+        );
+      }
+      newData.push(objElementData);
+    });
+    return newData;
+  }
+
+  function handleCheckUserData(data) {
+    Api.postEmail(data, isCart)
+      .then((res) => {
+        alert(
+          `успешный заказ ${isCart.length} позиций товара, с вами свяжется менеджер по телефону ${data.phone}`,
+        );
+        console.log(data, isCart);
+      })
+      .catch((err) => {
+        alert(`Что-то пошло не так, попробуйте позднее`);
+        console.log(err);
+      });
+  }
+
   function showProducts() {
-    setProducts(true);
+    return setProducts(true);
   }
 
   function createCategoryList(data) {
@@ -65,6 +99,7 @@ function App() {
         if (!category.includes(cat.category)) {
           return category.push(cat.category);
         }
+        return "";
       } else {
         return "";
       }
@@ -78,7 +113,7 @@ function App() {
       if (mark.length !== 0 && checkData.length !== 0) {
         const searchArrays = [];
         checkData.map((data) => {
-          data.mark.toUpperCase().indexOf(mark[0].toUpperCase()) >= 0 &&
+          data["Марка"].toUpperCase().indexOf(mark[0].toUpperCase()) >= 0 &&
             searchArrays.push(data);
         });
         searchArrays.sort();
@@ -93,7 +128,7 @@ function App() {
         const searchArrays = [];
         currentArr.map((element) => {
           model.map((mod) => {
-            if (mod.indexOf(element.model) >= 0) {
+            if (mod.indexOf(element["Модель"]) >= 0) {
               return searchArrays.push(element);
             }
           });
@@ -110,7 +145,7 @@ function App() {
         const searchArrays = [];
         currentArr.map((element) => {
           generation.map((gen) => {
-            if (gen.indexOf(element.generation) >= 0) {
+            if (gen.indexOf(element["Год"]) >= 0) {
               return searchArrays.push(element);
             }
           });
@@ -198,7 +233,28 @@ function App() {
   }
 
   function addToCart(card) {
-    return setCart([...isCart, card]);
+    if (isCart.length === 0) {
+      card["Количество"] = 1;
+      return setCart([...isCart, card]);
+    } else {
+      let artNums = [];
+      isCart.map((elem) => {
+        artNums.push(elem["Артикул"]);
+      });
+      if (artNums.includes(card["Артикул"])) {
+        console.log(Number(isCart[isCart.indexOf(card)]["Количество"]));
+
+        Number(isCart[isCart.indexOf(card)]["Количество"]++);
+      } else {
+        card["Количество"] = 1;
+        return setCart([...isCart, card]);
+      }
+    }
+    return setCartCount(isCardCount + 1);
+  }
+
+  function setCustomersCity(city) {
+    return setCurretCity(city);
   }
 
   return (
@@ -211,13 +267,15 @@ function App() {
           generation={checkedGenerations}
           onOpen={openPopup}
           isCurrentCart={isCart}
+          isCardCount={isCardCount}
           isSities={sitiesList}
+          onCity={setCustomersCity}
         />
         <Routes>
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/menu" element={<Menu isCategory={categories} />} />
           <Route
-            path="/"
+            path="autoforward/"
             element={
               <>
                 <Main
@@ -245,7 +303,15 @@ function App() {
                 <Article />
                 <Footer />
                 {isOpenPopup && (
-                  <PopupCart onOpen={openPopup} isCartItems={isCart} />
+                  <PopupCart
+                    onOpen={openPopup}
+                    isCartItems={isCart}
+                    onCheckedUserData={handleCheckUserData}
+                    isCardCount={isCardCount}
+                    isCity={isCurrentCity}
+                    is
+                    isCurCart={isCart}
+                  />
                 )}
               </>
             }

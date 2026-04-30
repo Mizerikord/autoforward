@@ -11,6 +11,7 @@ function Products(props) {
     const [isNum, setNum] = useState(3);
     const [isCards, setCards] = useState([]);
     const [isCard, setIsCard] = useState([]);
+    const [query, setQuery] = useState('');
 
     function handleResize() {
         if (window.innerWidth > 1425) {
@@ -87,12 +88,21 @@ function Products(props) {
         }
     }, [props.isSearch])
 
-    
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return query.trim() !== "" ? search() : "";
+        }
+    }
+
+    const handleInputChange = (event) => {
+        return setQuery(event.target.value);
+    };
 
     return (props.isSearch &&
         <div className="products">
             <div className="products_container">
-                <input type="search" id="products" name="products" className="products_search" />
+                <input type="search" id="products" name="products" className="products_search" onKeyDown={handleKeyPress} onChange={handleInputChange}/>
                 <button className="products_btn" onClick={search}>Найти</button>
             </div>
             <div className="products_info-container">

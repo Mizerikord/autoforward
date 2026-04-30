@@ -285,7 +285,7 @@
 
 .header_navbar-search-img {
   position: absolute;
-  right: 24px;
+  right: 10px;
   background-image: url(../../media/search.svg);
   background-repeat: no-repeat;
   background-position: right;
