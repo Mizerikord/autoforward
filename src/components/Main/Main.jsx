@@ -373,7 +373,7 @@ function Main(props) {
     useEffect(() => {
         const listWidth = document.querySelector(".models").offsetWidth;
         document.querySelector(".main-form_params-list").style.width = `${listWidth}/3`;
-    }, [window.innerWidth])
+    }, [])
 
     //ограничиваем количество символов для вывода в окно
     function renderLimitSymbol(data) {

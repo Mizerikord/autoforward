@@ -15,7 +15,7 @@ import Menu from "./Menu/Menu";
 import PopupCart from "./PopupCart/PopupCart";
 import Api from "../utils/Api";
 import sitiesList from "../utils/sitiesList";
-import JSONData from "../utils/export-data";
+// import JSONData from "../utils/export-data";
 
 function App() {
   const categoryList = SearchType;
