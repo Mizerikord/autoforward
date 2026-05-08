@@ -5,10 +5,18 @@ import { useState } from "react";
 function Search(props) {
 
     const searchAuto = props.search;
-    const [category, setCategory] = useState("");
+    const [query, setQuery] = useState('');
 
     function handleSearch(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            return query.trim() !== "" ? handleSubmit() : "";
+        }
     }
+
+    const handleInputChange = (event) => {
+        return setQuery(event.target.value);
+    };
 
     function handleSubmit(){
         const inputValue = document.querySelector("#search-elements").value;
@@ -28,14 +36,14 @@ function Search(props) {
             <div className="search_cards-container">
                 <ul className="search_cards">
                     {searchAuto.map((elem, index) => {
-                        return <li className="search_card" key={index} onClick={handleSearch}>
+                        return <li className="search_card" key={index} onClick={handleSearch} onChange={handleInputChange}>
                             <img src={elem.img} alt="" className="search_card-img" />
                             <p className="search_card-text">{elem.type}</p>
                         </li>
                     })}
                 </ul>
             </div>
-            <Brands category={category} searchAuto={props.category} marks={props.export}/>
+            <Brands category={props.category} searchAuto={props.category} marks={props.export}/>
         </section>
     );
 }

@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 
 function Brands(props) {
 
-    const [categories, setCategory] = useState(props.category);
+    const [categories, setCategory] = useState([]);
     const [isAllMarks, setAllMarks] = useState([]);
     const currentCategory = props.category;
-    function createMarksList() {
+
+    useEffect(() => {
         const marks = [];
         props.marks.map((data) => {
             if (!marks.includes(data.mark)) {
@@ -15,17 +16,13 @@ function Brands(props) {
         })
         marks.sort();
         return setAllMarks(marks);
-    }
-
-    useEffect(() => {
-        return createMarksList();
     }, [props.marks])
 
 
     function viewMarks(e) {
         // ????????????????
         if (e.target.id === "popularMarks") {
-            setCategory(currentCategory);
+            setCategory(categories.length > 0 ? categories : currentCategory);
             e.target.style.background = "#666666";
             document.querySelector("#allMarks").style.background = "linear-gradient(90deg, #de556f, #48204e)";
         }

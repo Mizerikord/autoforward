@@ -24,17 +24,6 @@ function Main(props) {
     const [isCategory, setCategory] = useState([]);
     const [query, setQuery] = useState('');
 
-    function filterData(data) {
-        const newArrData = [];
-        Object.values(exports).map((elem) => {
-            if (!newArrData.includes(elem[data])) {
-                newArrData.push(elem[data]);
-            }
-        })
-        newArrData.sort();
-        setAllMarks(newArrData);
-    }
-
     //новостная лента
     const slederLength = news.length;
     function enterContent() {
@@ -51,10 +40,16 @@ function Main(props) {
     }
 
     useEffect(() => {
-        // setSearched(exports);
-        filterData("Марка");
+        const newArrData = [];
+        Object.values(exports).map((elem) => {
+            if (!newArrData.includes(elem["Марка"])) {
+                newArrData.push(elem["Марка"]);
+            }
+        })
+        newArrData.sort();
+        setAllMarks(newArrData);
         return enterContent();
-    }, []);
+    }, [exports]);
 
 
     function handleChangeMark(e) {

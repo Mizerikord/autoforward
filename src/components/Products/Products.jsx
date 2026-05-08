@@ -41,7 +41,7 @@ function Products(props) {
     }
 
     useEffect(() => {
-        window.addEventListener('resize', handleResize);
+        return window.addEventListener('resize', handleResize);
     }, []);
 
     function openCategory(e) {
@@ -85,6 +85,8 @@ function Products(props) {
             let currentExports = props.isSearch.slice(0, 6);
             setIsCard(currentExports);
             return setCards(props.isSearch);
+        } else {
+            return;
         }
     }, [props.isSearch])
 
