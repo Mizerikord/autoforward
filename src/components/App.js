@@ -37,13 +37,6 @@ function App() {
   const [isCurrentCity, setCurretCity] = useState("");
 
   useEffect(() => {
-    return getApiData();
-  }, []);
-
-  function getApiData() {
-    // setExportData(JSONData);
-    // setLoading(true);
-    // createCategoryList(JSONData);
     Api.getData()
       .then((data) => {
         createCategoryList(dataParse(data));
@@ -53,7 +46,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }
+  }, []);
 
   function dataParse(baseData) {
     const regex = /"/g;
