@@ -27,7 +27,7 @@ function Products(props) {
         const currentCount = isCount + 1;
         let cards = isCard;
         const addeditems = isCards.slice(isCount * isNum + 6, isCount * isNum + 6 + isNum);
-        addeditems.map((card) => {
+        addeditems.forEach((card) => {
             cards.push(card);
         });
         setIsCard(cards);

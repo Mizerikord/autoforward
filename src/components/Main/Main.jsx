@@ -41,7 +41,7 @@ function Main(props) {
 
     useEffect(() => {
         const newArrData = [];
-        Object.values(exports).map((elem) => {
+        Object.values(exports).forEach((elem) => {
             if (!newArrData.includes(elem["Марка"])) {
                 newArrData.push(elem["Марка"]);
             }
@@ -63,7 +63,7 @@ function Main(props) {
                 el.remove();
             });
             const option = [];
-            exports.map((elem) => {
+            exports.forEach((elem) => {
                 if (isMark.toUpperCase === elem["Марка"].toUpperCase) {
                     return option.push(elem);
                 }
@@ -105,7 +105,7 @@ function Main(props) {
                 el.remove();
             });
             const option = [];
-            exports.map((elem) => {
+            exports.forEach((elem) => {
                 if (isModel.toUpperCase === elem["Модель"].toUpperCase) {
                     return option.push(elem);
                 }
@@ -238,7 +238,7 @@ function Main(props) {
                     }
                 })
             } else {
-                checkedModels.map(model => {
+                checkedModels.forEach(model => {
                     newChecked.push(model);
                 })
                 newChecked.push(currentmodel);
@@ -288,7 +288,7 @@ function Main(props) {
     function createModelList(mark) {
         clearModelList();
         let modelList = [];
-        exports.map((elem => {
+        exports.forEach((elem => {
             if (elem["Марка"] === mark) {
                 if (modelList.length === 0) {
                     modelList.push(elem["Модель"]);
@@ -307,8 +307,8 @@ function Main(props) {
     function createGenerationlist(model) {
         clearModelList();
         const generationList = [];
-        model.map(curModel => {
-            exports.map(elem => {
+        model.forEach(curModel => {
+            exports.forEach(elem => {
                 if (elem["Модель"] === curModel) {
                     if (!generationList.includes(elem["Год"])) {
                         return generationList.push(elem["Год"]);
@@ -328,9 +328,9 @@ function Main(props) {
     function createDataList(content) {
         clearModelList();
         const contentBox = document.querySelector(".model-list");
-        content.map(element => {
+        content.forEach(element => {
             if (element === "") {
-                return
+                return "";
             } else {
                 const li = document.createElement("li");
                 li.classList.add("model-item");
@@ -348,9 +348,9 @@ function Main(props) {
         clearModelList();
         const targetBox = document.querySelector(".model-list");
         targetBox.classList.add("model-list__category");
-        props.isCategory.map(elem => {
+        props.isCategory.forEach(elem => {
             if (elem === "") {
-                return
+                return "";
             } else {
                 const li = document.createElement("li");
                 li.classList.add("main-form_params-item__category");
@@ -411,6 +411,7 @@ function Main(props) {
     function addViewEvent(e) {
         // ???????
         const elements = document.querySelectorAll(".main-form_select__text");
+        return elements;
     }
 
     //Выбор категории
@@ -501,9 +502,9 @@ function Main(props) {
                     <div className="main-form_select main-form_mark" onChange={handleChangeMark}>
                         <p id="mark-list" className="main-form_select__text" onClick={openList} onMouseEnter={addViewEvent}>{isMark.length > 0 ? isMark.join(", ") : "Марка"}</p>
                         <ul className="main-form_option-list main-form_option-list__marks main-form_option-list__disbled">
-                            {allMarks.map((car, index) => {
+                            {allMarks.forEach((car, index) => {
                                 if (car === "") {
-                                    return
+                                    return "";;
                                 } else {
                                     return <li className="main-form_option-item" key={index} onClick={handleCheck}>
                                         <p className="main-form_option__text">{car}</p>
@@ -535,9 +536,9 @@ function Main(props) {
                         <p id="generation-list" className="main-form_select__text" onClick={openList} onMouseEnter={addViewEvent}>{checkedGenerations.length > 0 ? renderLimitSymbol(checkedGenerations) : "Поколение"}</p>
                         <ul className="main-form_option-list main-form_option-list__generation main-form_option-list__disbled">
                             {isModel.length !== 0 &&
-                                isGeneration.map((gen, index) => {
+                                isGeneration.forEach((gen, index) => {
                                     if (gen === "") {
-                                        return
+                                        return "";
                                     } else {
                                         return <li className="main-form_option-item main-form_option-item-generation" key={index} onClick={handleCheck}>
                                             <p className="main-form_option__text main-form_option__text-generation">{gen}</p>

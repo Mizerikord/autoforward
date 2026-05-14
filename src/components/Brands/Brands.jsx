@@ -9,7 +9,7 @@ function Brands(props) {
 
     useEffect(() => {
         const marks = [];
-        props.marks.map((data) => {
+        props.marks.forEach((data) => {
             if (!marks.includes(data.mark)) {
                 marks.push(data.mark);
             }
