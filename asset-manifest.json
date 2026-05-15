@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/autoforward/static/css/main.0c03194f.css",
-    "main.js": "/autoforward/static/js/main.09eb20e9.js",
+    "main.css": "/autoforward/static/css/main.f826443b.css",
+    "main.js": "/autoforward/static/js/main.e9b09e8d.js",
     "static/media/Inter-Black.woff": "/autoforward/static/media/Inter-Black.fd37f7e052bea1018058.woff",
     "static/media/Inter-Medium.woff": "/autoforward/static/media/Inter-Medium.7ddb89dcdb33dd761944.woff",
     "static/media/Inter-Regular.woff": "/autoforward/static/media/Inter-Regular.34ed58565339f4f3be40.woff",
@@ -39,11 +39,11 @@
     "static/media/burger-menu.svg": "/autoforward/static/media/burger-menu.ece9500a70c9678ca66a.svg",
     "static/media/closeImg.svg": "/autoforward/static/media/closeImg.f1fa8fa3c41593459084cc55302c945e.svg",
     "static/media/select-icon.svg": "/autoforward/static/media/select-icon.cbb8df4a8314277881cf.svg",
-    "main.0c03194f.css.map": "/autoforward/static/css/main.0c03194f.css.map",
-    "main.09eb20e9.js.map": "/autoforward/static/js/main.09eb20e9.js.map"
+    "main.f826443b.css.map": "/autoforward/static/css/main.f826443b.css.map",
+    "main.e9b09e8d.js.map": "/autoforward/static/js/main.e9b09e8d.js.map"
   },
   "entrypoints": [
-    "static/css/main.0c03194f.css",
-    "static/js/main.09eb20e9.js"
+    "static/css/main.f826443b.css",
+    "static/js/main.e9b09e8d.js"
   ]
 }
