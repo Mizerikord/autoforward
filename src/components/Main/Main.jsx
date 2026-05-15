@@ -502,14 +502,13 @@ function Main(props) {
                     <div className="main-form_select main-form_mark" onChange={handleChangeMark}>
                         <p id="mark-list" className="main-form_select__text" onClick={openList} onMouseEnter={addViewEvent}>{isMark.length > 0 ? isMark.join(", ") : "Марка"}</p>
                         <ul className="main-form_option-list main-form_option-list__marks main-form_option-list__disbled">
-                            {allMarks.forEach((car, index) => {
+                            {allMarks.map((car, index) => {
                                 if (car === "") {
-                                    return "";;
+                                    return "";
                                 } else {
                                     return <li className="main-form_option-item" key={index} onClick={handleCheck}>
                                         <p className="main-form_option__text">{car}</p>
                                         <input name={car} className="main-form_option" type="checkbox" value={car} />
-
                                     </li>
                                 }
                             })}
@@ -536,7 +535,7 @@ function Main(props) {
                         <p id="generation-list" className="main-form_select__text" onClick={openList} onMouseEnter={addViewEvent}>{checkedGenerations.length > 0 ? renderLimitSymbol(checkedGenerations) : "Поколение"}</p>
                         <ul className="main-form_option-list main-form_option-list__generation main-form_option-list__disbled">
                             {isModel.length !== 0 &&
-                                isGeneration.forEach((gen, index) => {
+                                isGeneration.map((gen, index) => {
                                     if (gen === "") {
                                         return "";
                                     } else {

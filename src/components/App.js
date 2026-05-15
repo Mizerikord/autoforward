@@ -15,7 +15,7 @@ import Menu from "./Menu/Menu";
 import PopupCart from "./PopupCart/PopupCart";
 import Api from "../utils/Api";
 import sitiesList from "../utils/sitiesList";
-// import JSONData from "../utils/export-data";
+import JSONData from "../utils/export-data";
 
 function App() {
   const categoryList = SearchType;
@@ -37,44 +37,42 @@ function App() {
   const [isCurrentCity, setCurretCity] = useState("");
 
   useEffect(() => {
-    Api.getData()
-      .then((data) => {
-        createCategoryList(dataParse(data));
-        setExportData(dataParse(data));
-        setLoading(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // Api.getData()
+    //   .then((data) => {
+    //     const currentData = dataParse(data);
+    //     console.log(currentData);
+        
+    //     createCategoryList(currentData);
+    //     setExportData(currentData);
+    //     setLoading(true);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+      // });
+    const currentData = dataParse(JSONData);
+    createCategoryList(currentData);
+    setExportData(currentData);
+    setLoading(true);
   }, []);
 
-  function dataParse(baseData) {
-    // Проверяем, есть ли данные для обработки
-    if (!baseData || baseData.length === 0) {
-        return [];
-    }
-    const headerLine = Object.values(baseData[0])[0];
-    const headers = headerLine.split(';');
+function dataParse(baseData) {
+    const regex = /"/g;
     const newData = [];
+    const firstStr = Object.keys(baseData[0])[0].split('";"');
+    // newData.push(firstStr);
     baseData.forEach((elem) => {
-        const objElementData = {};
-        const dataLine = Object.values(elem)[0];
-        const values = dataLine.split(';');
-        headers.forEach((header, index) => {
-            const cleanHeader = header.trim().replace(/"/g, '');
-            // Если в строке данных есть значение для этого столбца
-            if (values[index] !== undefined) {
-                const cleanValue = values[index].trim().replace(/"/g, '');
-                objElementData[cleanHeader] = cleanValue;
-            } else {
-                // Если строка короче заголовка, можно задать значение по умолчанию
-                objElementData[cleanHeader] = null;
-            }
-        });
-        newData.push(objElementData);
+      const objElementData = {};
+      let valueSplit = Object.values(elem)[0].split(";");
+      for (let i = 0; i < firstStr.length; i++) {
+        objElementData[firstStr[i].replace(regex, "")] = valueSplit[i].replace(
+          regex,
+          "",
+        );
+      }
+      newData.push(objElementData);
     });
     return newData;
-}
+  }
 
   function handleCheckUserData(data) {
     Api.postEmail(data, isCart)
@@ -109,59 +107,108 @@ function App() {
     return setCategories(category);
   }
 
-  function searchCarsData(data, mark, model, generation, inputValue, category) {
-  // Создаем копию исходных данных, чтобы не мутировать оригинал
-  let resultData = [...data];
-
-  // 1. Поиск по строке (по всем полям)
-  if (inputValue) {
-    const searchTerm = inputValue.toUpperCase().trim();
-    resultData = resultData.filter((item) => {
-      // Проверяем каждое значение в объекте
-      return Object.values(item).some((value) => {
-        if (typeof value === 'string') {
-          return value.toUpperCase().includes(searchTerm);
+  function searchCarsData(mark, model, generation, inputValue, category) {
+    //поиск по марке
+    function findMark(checkData, mark) {
+      if (mark.length !== 0 && checkData.length !== 0) {
+        const searchArrays = [];
+        checkData.forEach((data) => {
+          data["Марка"].toUpperCase().indexOf(mark[0].toUpperCase()) >= 0 &&
+            searchArrays.push(data);
+        });
+        searchArrays.sort();
+        return searchArrays;
+      } else {
+        return checkData;
+      }
+    }
+    //поиск по модели
+    function findModel(currentArr, model) {
+      if (model.length !== 0 && currentArr.length !== 0) {
+        const searchArrays = [];
+        currentArr.forEach((element) => {
+          model.forEach((mod) => {
+            if (mod.indexOf(element["Модель"]) >= 0) {
+              return searchArrays.push(element);
+            }
+          });
+        });
+        searchArrays.sort();
+        return searchArrays;
+      } else {
+        return currentArr;
+      }
+    }
+    //поиск по поколению
+    function findGeneration(currentArr, generation) {
+      if (generation.length !== 0 && currentArr.length !== 0) {
+        const searchArrays = [];
+        currentArr.forEach((element) => {
+          generation.forEach((gen) => {
+            if (gen.indexOf(element["Год"]) >= 0) {
+              return searchArrays.push(element);
+            }
+          });
+        });
+        searchArrays.sort();
+        return searchArrays;
+      } else {
+        return currentArr;
+      }
+    }
+    //поиск по строке поиска
+    function searchValue(inputValue, searchArray) {
+      if (inputValue && inputValue.length !== 0) {
+        const currentData = [];
+        const searchData =
+          searchArray.length === 0 ? isExportData : searchArray;
+        searchData.forEach((elem) => {
+          Object.values(elem).find((value) => {
+            if (value === "") {
+              return "";
+            } else {
+              if (value.toUpperCase().indexOf(inputValue.toUpperCase()) >= 0) {
+                return currentData.push(elem);
+              }
+              return "";
+            }
+          });
+        });
+        return currentData;
+      } else {
+        return searchArray;
+      }
+    }
+    //поиск по доп. парамерам
+    function findCategory(currentArr, category) {
+      if (category !== undefined && currentArr.length !== 0) {
+        if (category.length !== 0) {
+          const searchArrays = [];
+          currentArr.forEach((element) => {
+            category.forEach((cat) => {
+              if (cat.indexOf(element.category) >= 0) {
+                return searchArrays.push(element);
+              }
+            });
+          });
+          searchArrays.sort();
+          return searchArrays;
+        } else {
+          return currentArr;
         }
-        return false;
-      });
-    });
+      } else {
+        return currentArr;
+      }
+    }
+    //пошаговый поиск
+    let resultData = findCategory(isExportData, category);
+    resultData = searchValue(inputValue, resultData);
+    resultData = findMark(resultData, mark);
+    resultData = findModel(resultData, model);
+    resultData = findGeneration(resultData, generation);
+    setSearch(resultData);
+    return resultData;
   }
-  // 2. Поиск по марке
-  if (mark && mark.length > 0) {
-    const searchTerms = mark.map((m) => m.toUpperCase().trim());
-    resultData = resultData.filter((item) => {
-      const itemMark = (item["Марка"] || "").toUpperCase();
-      return searchTerms.some((term) => itemMark.includes(term));
-    });
-  }
-  // 3. Поиск по модели
-  if (model && model.length > 0) {
-    const searchTerms = model.map((m) => m.toUpperCase().trim());
-    resultData = resultData.filter((item) => {
-      const itemModel = (item["Модель"] || "").toUpperCase();
-      return searchTerms.some((term) => itemModel.includes(term));
-    });
-  }
-
-  // 4. Поиск по поколению/году
-  if (generation && generation.length > 0) {
-    const searchTerms = generation.map((g) => g.toUpperCase().trim());
-    resultData = resultData.filter((item) => {
-      const itemGen = (item["Год"] || "").toUpperCase();
-      return searchTerms.some((term) => itemGen.includes(term));
-    });
-  }
-  // 5. Поиск по категории
-  if (category && category.length > 0) {
-    const searchTerms = category.map((c) => c.toUpperCase().trim());
-    resultData = resultData.filter((item) => {
-      const itemCat = (item.category || "").toUpperCase();
-      return searchTerms.some((term) => itemCat.includes(term));
-    });
-  }
-  setSearch(resultData);
-  return resultData;
-}
 
   //Изменение данных в стэйте хранения
   function setCarsData(element, data) {
