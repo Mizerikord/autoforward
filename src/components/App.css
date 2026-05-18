@@ -5,12 +5,19 @@
   justify-content: flex-start;
 }
 
-.hideOverflow {
-  overflow-y: hidden;
+.hideOverflow::-webkit-scrollbar {
+    width: 0;
+}
+
+.hideOverflow::-webkit-scrollbar {
+  width: 0;
 }
 
 @media screen and (max-width: 420px) {
-  html, body{
-    overflow: hidden;
+  html::-webkit-scrollbar, body::-webkit-scrollbar, .App::-webkit-scrollbar {
+    width: 0;
+  }
+  html::-webkit-scrollbar-track, body::-webkit-scrollbar-track, .App::-webkit-scrollbar-track {
+    width: 0;
   }
 }

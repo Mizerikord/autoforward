@@ -72,3 +72,9 @@
   letter-spacing: 0%;
   color: #222222;
 }
+
+@media screen and (max-width: 420px) {
+.brands_selector {
+  width: 100%;
+  }
+}

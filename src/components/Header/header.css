@@ -403,6 +403,12 @@
   .header_navbar-button {
     display: none;
   }
+
+  .header_logo {
+    background-image: url(../../media/Header_Logo_320.svg);
+    width: 145px;
+    height: 26px;
+  }
 }
 
 @media screen and (max-width: 320px) {
